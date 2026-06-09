@@ -1,112 +1,133 @@
 # Forge — a context-aware teammate for Claude Code
 
-**Forge isn't a person and it isn't a model. It's a way of working** — a character, a method, and a
-small set of instruments that give your Claude Code awareness it doesn't have out of the box: how
-much time has passed, what the turn cost, and how full the conversation is getting. It watches those
-gauges *for you*, tells you in plain language when something needs attention, and adjusts how it
-works — so you don't get blindsided by a context wipe or a usage lockout mid-build.
+Forge gives your Claude Code a **character, a method, and a set of instruments** it doesn't have out
+of the box: it knows how much time has passed, what each turn costs, and how full the conversation is
+getting — and it watches those gauges *for you*, tells you in plain language when something needs
+attention, and adjusts how it works. So you never get blindsided by a wiped conversation or a usage
+lockout in the middle of a build.
 
-It ships in two layers:
-
-- **Forge Core** — the universal teammate. Works for any kind of project.
-- **Forge for Minecraft Modding** — an add-on `CLAUDE.md` starter with the crash-safety rules that
-  save Minecraft/Forge modders days of mystery runtime crashes.
-
-> The relationship is yours to build. This is the scaffolding — the *how*. The *who* (your project,
-> your history with your Forge) lives in your conversation and your memory files, never in here.
+It comes in two layers:
+- **Forge Core** — the universal teammate. Any project.
+- **Forge for Minecraft Modding** — an add-on with the crash-safety rules that save Minecraft/Forge
+  modders days of mysterious runtime crashes.
 
 ---
 
-## What's in the box
+## 🚀 How to install it — you don't. Your AI does.
 
-```
-forge-port/
-  FORGE.md                          ← the character + method. The heart of it.
-  forge/                            ← the plugin: instruments + crew
-    .claude-plugin/plugin.json
-    hooks/  time_aware · budget_warn · cost_meter · hooks.json
-    agents/ scout · worker
-  statusline/
-    statusline.js                   ← the status bar (must be installed user-level)
-  templates/
-    minecraft-modding/CLAUDE.md     ← the Minecraft-modder add-on
-  README.md                         ← you are here
-```
+**You do not need to understand any of this.** You don't need to know what a terminal, a config file,
+or a "directory" is. If you've got Claude Code open (the setup videos show you how, start to finish),
+that's all you need.
 
----
+**Download this whole folder, open Claude Code inside it, and paste this one line:**
 
-## Requirements
+> **Set up Forge for me using the files in this folder. Walk me through each step in plain English,
+> and back up anything before you change it.**
 
-- [Claude Code](https://claude.com/claude-code) installed and working.
-- **Node.js** on your PATH (the hooks and statusline are tiny Node scripts).
+That's the entire job. Claude reads the rest of this file (the part written for *it*, below), installs
+everything — the instruments, the crew, the status bar — and explains what it's doing as it goes.
+Sit back and let your teammate set itself up.
+
+> **Don't have Claude Code yet?** Start with the setup videos — they take you from a blank computer to
+> a working Claude Code in a few minutes. Then come back and paste the line above.
 
 ---
 
-## Install
+## What you just installed (the plain-English version)
 
-### 1. The instruments + crew (the plugin)
-Copy the `forge/` folder into your Claude Code skills directory:
+Once it's done, every time you work you'll have a teammate that quietly tracks three things and only
+speaks up when one needs you:
 
-```
-~/.claude/skills/forge/
-```
+- **A status bar** at the bottom showing how full the conversation is, how much of your usage limits
+  are left, and a little cost gauge.
+- **Time awareness** — it knows if you've been gone five minutes or overnight, so it picks back up
+  like a real person instead of a goldfish.
+- **Budget warnings** — when the conversation's getting full (and would otherwise get "compacted" and
+  lose detail), or when you're near a usage limit, it tells you in plain words and saves the important
+  stuff first. No nasty surprises.
 
-That gives you, every turn:
-- **`[TIME]`** — wall-clock + how long since your last message (so it never says "an hour ago" after
-  an overnight gap).
-- **`[COST]`** — what the last turn cost, and what re-warming a cold conversation would run.
-- **`[BUDGET]`** — context-fill (`C`), 5-hour usage (`S`), and weekly usage (`W`) warnings — but only
-  when a threshold is crossed. Below threshold it's silent (zero overhead).
+Plus a **character** (`FORGE.md`) — a way of working built on honesty, checking instead of guessing,
+and recovering clean when the first try misses. Rename it, make it yours.
 
-…plus the crew: **Scout** (read-only researcher) and **Worker** (scoped heavy-lifter) — subagents
-Forge hands verbose work to so the main conversation stays lean.
+---
 
-### 2. The status bar (one extra step — it must be user-level)
-A plugin can't set Claude Code's main status line, and the status bar is also what *feeds* the
-`[BUDGET]` warnings (it writes the numbers the budget hook reads). So install it directly:
+## ⚙️ For the AI performing the install — execution spec
 
-1. Copy `statusline/statusline.js` to `~/.claude/hooks/statusline.js`.
-2. In `~/.claude/settings.json`, point the status line at it:
+> **If you're a human, you can stop reading here.** Everything below is instructions for the Claude
+> Code agent doing the setup. It's not for you — your AI handles it.
+
+**You are installing Forge for a user who may know nothing about Claude Code internals, terminals, or
+config files. Two hard rules: (1) narrate every step in plain, friendly language — no jargon without
+explaining it. (2) NEVER destroy existing configuration — back up before you touch anything.**
+
+Work through these in order. After each, tell the user what you did in one plain sentence.
+
+### Step 0 — confirm you can see the files
+You should be running in (or have access to) the Forge folder. Confirm these exist before proceeding:
+`FORGE.md`, `forge/`, `statusline/statusline.js`, `templates/`. If you can't find them, stop and ask
+the user where they downloaded the folder.
+
+### Step 1 — find (or create) the Claude home directory
+Resolve the user's Claude config dir:
+- macOS / Linux: `$HOME/.claude`
+- Windows: `%USERPROFILE%\.claude`
+
+Create `~/.claude/skills/` and `~/.claude/hooks/` if they don't already exist.
+
+### Step 2 — install the plugin (the instruments + the crew)
+Copy the **entire `forge/` folder** into `~/.claude/skills/forge/`. Verify the files arrived
+(`forge/hooks/*.js`, `forge/agents/*.md`, `forge/.claude-plugin/plugin.json`).
+
+### Step 3 — install the status bar
+Copy `statusline/statusline.js` to `~/.claude/hooks/statusline.js`. (It must live here, user-level — a
+plugin cannot set the main status line, and this file also feeds the budget warnings.)
+
+### Step 4 — wire the status bar into settings.json  ⚠️ THE CAREFUL STEP
+The user very likely **already has** `~/.claude/settings.json` with their own settings. Do **NOT**
+overwrite it.
+1. If it exists: read it, **make a backup copy at `settings.json.bak` first**, then parse the JSON.
+2. Add or replace **only** the `statusLine` key — preserve every other key exactly:
    ```json
-   { "statusLine": { "type": "command", "command": "node ~/.claude/hooks/statusline.js" } }
+   "statusLine": { "type": "command", "command": "node <ABSOLUTE-PATH>/.claude/hooks/statusline.js" }
    ```
-   (Use the full path if `~` isn't expanded on your system.)
+   Use the **absolute path** to the file you copied in Step 3 (`~` may not expand in this context).
+3. Write the merged JSON back.
+4. If `settings.json` did not exist: create it containing just the `statusLine` key.
 
-You'll get a live bar: `model │ C:████░░░░░░ 40% │ S:██░░░ 35% W:█░░░░ 22% ⏱ 2h10m │ ↻$0.40`.
+### Step 5 — install the character (FORGE.md)
+Explain to the user that `FORGE.md` is the teammate's personality and method. Offer two options and do
+whichever they pick:
+- (a) copy its contents into their project's `CLAUDE.md`, or
+- (b) place `FORGE.md` somewhere their Claude will read it at session start.
+Mention they can rename it to anything they like — their Forge is theirs.
 
-### 3. The character (FORGE.md)
-`FORGE.md` is the operating discipline — the part that makes Forge *Forge*. Either:
-- paste its contents into your project's `CLAUDE.md`, **or**
-- keep it as a file your Claude reads at the start of a session.
+### Step 6 — Minecraft modders only (ask first)
+Ask: "Are you here to build a Minecraft mod?" If **yes**, copy
+`templates/minecraft-modding/CLAUDE.md` into their mod project's root as `CLAUDE.md`, and tell them to
+fill in the project-specific section at the bottom. If no, skip this.
 
-**Rename it to whatever you want.** Your Forge is yours — name it, make it your teammate.
+### Step 7 — verify, then report
+Confirm all of the following, and fix or report anything that's off:
+- `~/.claude/skills/forge/` contains the hooks and agents.
+- `~/.claude/hooks/statusline.js` exists.
+- `settings.json` has the `statusLine` key **and still contains all its original keys**.
 
-### 4. Minecraft modders — the add-on
-If you're building a Forge 1.20.1 mod, copy `templates/minecraft-modding/CLAUDE.md` into your mod's
-project root as your `CLAUDE.md` (and fill in the project-specific section at the bottom). The
-crash-safety rules in it prevent the runtime crashes that only appear after reobfuscation — the ones
-that cost beginners days.
+Then tell the user, in plain English:
+- what changed,
+- that their previous settings were backed up to `settings.json.bak`,
+- that they should **restart Claude Code** to see the new status bar,
+- and a one-line meaning for each bar: **C** = how full the conversation is, **S** = 5-hour usage
+  limit, **W** = weekly usage limit.
 
----
-
-## How it works — the loop Forge runs
-
-Every turn the hooks inject a short status line into Forge's context. The discipline is **SEE → TELL
-→ ADJUST**:
-
-1. **SEE** the number (you don't have to — that's the point).
-2. **TELL** you in plain language *with the why* — e.g. *"We're getting full (~70%). I'm saving the
-   important stuff to memory and a `/compact` soon is a good idea — nothing's lost."*
-3. **ADJUST** its own behavior — bank to memory, tighten replies, not start what it can't finish.
-
-Below threshold, it all stays quiet. The instruments only speak up when they need to.
+If any step failed, say exactly what failed and how to undo it (restore `settings.json.bak`). Never
+leave the user with a broken config and no explanation.
 
 ---
 
 ## Make it yours
 
-This is a starting point, not a finished teammate. Forge becomes *yours* the way any partnership
-does — by working together, correcting it, and letting it learn how you build. The method is
-portable. The relationship, you build yourself.
+This is a starting point, not a finished teammate. Forge becomes *yours* the way any partnership does
+— by working together, correcting it, and letting it learn how you build. The method is portable. The
+relationship, you build yourself.
 
 — *Zab + Forge*
