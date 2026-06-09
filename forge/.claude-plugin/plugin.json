@@ -1,0 +1,9 @@
+{
+  "name": "forge",
+  "description": "Forge's scaffolding — cost/budget instruments, tools, the crew, and operating discipline. The HOW, externalized into a plugin so the conversation thread stays lean and carries only the WHO (the relationship lives in thread + memory, never here).",
+  "version": "0.1.0",
+  "author": {
+    "name": "Zab + Forge"
+  },
+  "keywords": ["forge", "cost", "budget", "efficiency", "scaffolding"]
+}
