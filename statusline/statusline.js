@@ -150,7 +150,7 @@ function render(data) {
     // threshold is crossed (hooks don't receive context_window/rate_limits — verified via probe).
     try {
         fs.writeFileSync(path.join(HOOKS_DIR, '_budget.json'),
-            JSON.stringify({ c: bC, s: bS, w: bW, reset: bReset }));
+            JSON.stringify({ c: bC, s: bS, w: bW, reset: bReset, t: Date.now() }));
     } catch (_) {}
 
     if (parts.length) process.stdout.write(parts.join(` ${DIM}│${R} `) + '\n');

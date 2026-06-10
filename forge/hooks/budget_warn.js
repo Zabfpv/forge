@@ -18,6 +18,13 @@ const S_CRIT = 90;   // 5-hour %: near lockout
 const W_WARN = 80;   // weekly %: the longer-horizon ceiling is getting tight
 const W_CRIT = 92;   // weekly %: weekly lockout is the real risk now
 
+// Staleness guard: statusline.js stamps `t` (epoch ms) on every bridge write. If the reading is older
+// than STALE_MS, the statusline hasn't refreshed it recently (e.g. right after an account swap or a
+// 5-hour reset) and the numbers can't be trusted — so warn off NOTHING rather than relay a stale value.
+// Backward-compatible: if `t` is absent (older statusline that doesn't stamp), fall back to old behavior
+// rather than silently disabling warnings.
+const STALE_MS = 120000; // 2 min
+
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
@@ -27,6 +34,7 @@ const budgetFile = path.join(os.homedir(), '.claude', 'hooks', '_budget.json');
 
 try {
     const b = JSON.parse(fs.readFileSync(budgetFile, 'utf8'));
+    if (b.t && (Date.now() - b.t) > STALE_MS) process.exit(0); // provably stale → stay silent
     const warns = [];
 
     if (b.c != null && b.c >= C_CRIT) {
