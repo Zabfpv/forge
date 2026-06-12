@@ -9,3 +9,5 @@ node_modules/
 _budget.json
 _relight.json
 _lastturn.json
+
+.env
